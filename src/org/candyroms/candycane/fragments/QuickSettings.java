@@ -55,13 +55,19 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private static final String PREF_TILE_ANIM_DURATION = "qs_tile_animation_duration";
     private static final String PREF_TILE_ANIM_INTERPOLATOR = "qs_tile_animation_interpolator";
     private static final String PREF_SYSUI_QQS_COUNT = "sysui_qqs_count_key";
-    private static final String QUICK_PULLDOWN = "quick_pulldown";
+    private static final String PREF_QUICK_PULLDOWN = "quick_pulldown";
+    private static final String PREF_ROWS_PORTRAIT = "qs_rows_portrait";
+    private static final String PREF_ROWS_LANDSCAPE = "qs_rows_landscape";
+    private static final String PREF_COLUMNS = "qs_columns";
 
     private CustomSeekBarPreference mSysuiQqsCount;
     private ListPreference mTileAnimationStyle;
     private ListPreference mTileAnimationDuration;
     private ListPreference mTileAnimationInterpolator;
     private ListPreference mQuickPulldown;
+    private ListPreference mRowsPortrait;
+    private ListPreference mRowsLandscape;
+    private ListPreference mQsColumns;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,8 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
 
         final ContentResolver resolver = getActivity().getContentResolver();
         final PreferenceScreen prefSet = getPreferenceScreen();
+
+        int defaultValue;
 
         mTileAnimationStyle = (ListPreference) findPreference(PREF_TILE_ANIM_STYLE);
         int tileAnimationStyle = Settings.System.getIntForUser(getContentResolver(),
@@ -97,7 +105,7 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
         updateTileAnimationInterpolatorSummary(tileAnimationInterpolator);
         mTileAnimationInterpolator.setOnPreferenceChangeListener(this);
 
-        mQuickPulldown = (ListPreference) findPreference(QUICK_PULLDOWN);
+        mQuickPulldown = (ListPreference) findPreference(PREF_QUICK_PULLDOWN);
         mQuickPulldown.setOnPreferenceChangeListener(this);
         int quickPulldownValue = Settings.System.getIntForUser(getContentResolver(),
                 Settings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 1, UserHandle.USER_CURRENT);
@@ -110,6 +118,27 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
         mSysuiQqsCount.setValue(SysuiQqsCount / 1);
         mSysuiQqsCount.setOnPreferenceChangeListener(this);
 
+        mRowsPortrait = (ListPreference) findPreference(PREF_ROWS_PORTRAIT);
+        int rowsPortrait = Settings.Secure.getInt(getContentResolver(),
+                Settings.Secure.QS_ROWS_PORTRAIT, 3);
+        mRowsPortrait.setValue(String.valueOf(rowsPortrait));
+        mRowsPortrait.setSummary(mRowsPortrait.getEntry());
+        mRowsPortrait.setOnPreferenceChangeListener(this);
+
+        defaultValue = getResources().getInteger(com.android.internal.R.integer.config_qs_num_rows_landscape_default);
+        mRowsLandscape = (ListPreference) findPreference(PREF_ROWS_LANDSCAPE);
+        int rowsLandscape = Settings.Secure.getInt(getContentResolver(),
+                Settings.Secure.QS_ROWS_LANDSCAPE, defaultValue);
+        mRowsLandscape.setValue(String.valueOf(rowsLandscape));
+        mRowsLandscape.setSummary(mRowsLandscape.getEntry());
+        mRowsLandscape.setOnPreferenceChangeListener(this);
+
+        mQsColumns = (ListPreference) findPreference(PREF_COLUMNS);
+        int columnsQs = Settings.Secure.getInt(getContentResolver(),
+                Settings.Secure.QS_COLUMNS, 3);
+        mQsColumns.setValue(String.valueOf(columnsQs));
+        mQsColumns.setSummary(mQsColumns.getEntry());
+        mQsColumns.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -124,6 +153,10 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object objValue) {
+
+        int intValue;
+        int index;
+
         if (preference == mTileAnimationStyle) {
             int tileAnimationStyle = Integer.valueOf((String) objValue);
             Settings.System.putIntForUser(getContentResolver(), Settings.System.ANIM_TILE_STYLE,
@@ -153,6 +186,26 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
             int SysuiQqsCount = (Integer) objValue;
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.QQS_COUNT, SysuiQqsCount * 1);
+        } else if (preference == mRowsPortrait) {
+            intValue = Integer.valueOf((String) objValue);
+            index = mRowsPortrait.findIndexOfValue((String) objValue);
+            Settings.Secure.putInt(getContentResolver(),
+                    Settings.Secure.QS_ROWS_PORTRAIT, intValue);
+            preference.setSummary(mRowsPortrait.getEntries()[index]);
+            return true;
+        } else if (preference == mRowsLandscape) {
+            intValue = Integer.valueOf((String) objValue);
+            index = mRowsLandscape.findIndexOfValue((String) objValue);
+            Settings.Secure.putInt(getContentResolver(),
+                    Settings.Secure.QS_ROWS_LANDSCAPE, intValue);
+            preference.setSummary(mRowsLandscape.getEntries()[index]);
+            return true;
+        } else if (preference == mQsColumns) {
+            intValue = Integer.valueOf((String) objValue);
+            index = mQsColumns.findIndexOfValue((String) objValue);
+            Settings.Secure.putInt(getContentResolver(),
+                    Settings.Secure.QS_COLUMNS, intValue);
+            preference.setSummary(mQsColumns.getEntries()[index]);
             return true;
         }
         return false;

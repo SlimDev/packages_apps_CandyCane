@@ -54,11 +54,11 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private static final String PREF_TILE_ANIM_STYLE = "qs_tile_animation_style";
     private static final String PREF_TILE_ANIM_DURATION = "qs_tile_animation_duration";
     private static final String PREF_TILE_ANIM_INTERPOLATOR = "qs_tile_animation_interpolator";
-    private static final String PREF_SYSUI_QQS_COUNT = "sysui_qqs_count_key";
     private static final String PREF_QUICK_PULLDOWN = "quick_pulldown";
     private static final String PREF_ROWS_PORTRAIT = "qs_rows_portrait";
     private static final String PREF_ROWS_LANDSCAPE = "qs_rows_landscape";
     private static final String PREF_COLUMNS = "qs_columns";
+    private static final String KEY_SYSUI_QQS_COUNT = "sysui_qqs_count_key";
 
     private CustomSeekBarPreference mSysuiQqsCount;
     private ListPreference mTileAnimationStyle;
@@ -68,6 +68,7 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private ListPreference mRowsPortrait;
     private ListPreference mRowsLandscape;
     private ListPreference mQsColumns;
+    private ListPreference mSysuiQqsCount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,12 +113,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
         mQuickPulldown.setValue(String.valueOf(quickPulldownValue));
         updatePulldownSummary(quickPulldownValue);
 
-        mSysuiQqsCount = (CustomSeekBarPreference) findPreference(PREF_SYSUI_QQS_COUNT);
-        int SysuiQqsCount = Settings.Secure.getInt(getContentResolver(),
-                Settings.Secure.QQS_COUNT, 6);
-        mSysuiQqsCount.setValue(SysuiQqsCount / 1);
-        mSysuiQqsCount.setOnPreferenceChangeListener(this);
-
         mRowsPortrait = (ListPreference) findPreference(PREF_ROWS_PORTRAIT);
         int rowsPortrait = Settings.Secure.getInt(getContentResolver(),
                 Settings.Secure.QS_ROWS_PORTRAIT, 3);
@@ -139,6 +134,13 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
         mQsColumns.setValue(String.valueOf(columnsQs));
         mQsColumns.setSummary(mQsColumns.getEntry());
         mQsColumns.setOnPreferenceChangeListener(this);
+
+        mSysuiQqsCount = (ListPreference) findPreference(KEY_SYSUI_QQS_COUNT);
+        int SysuiQqsCount = Settings.Secure.getInt(getContentResolver(),
+                Settings.Secure.QQS_COUNT, 5);
+        mSysuiQqsCount.setValue(Integer.toString(SysuiQqsCount));
+        mSysuiQqsCount.setSummary(mSysuiQqsCount.getEntry());
+        mSysuiQqsCount.setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -182,10 +184,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
                     quickPulldownValue, UserHandle.USER_CURRENT);
             updatePulldownSummary(quickPulldownValue);
             return true;
-        } else if (preference == mSysuiQqsCount) {
-            int SysuiQqsCount = (Integer) objValue;
-            Settings.Secure.putInt(getActivity().getContentResolver(),
-                    Settings.Secure.QQS_COUNT, SysuiQqsCount * 1);
         } else if (preference == mRowsPortrait) {
             intValue = Integer.valueOf((String) objValue);
             index = mRowsPortrait.findIndexOfValue((String) objValue);
@@ -206,6 +204,13 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
             Settings.Secure.putInt(getContentResolver(),
                     Settings.Secure.QS_COLUMNS, intValue);
             preference.setSummary(mQsColumns.getEntries()[index]);
+            return true;
+        } else if (preference == mSysuiQqsCount) {
+            String SysuiQqsCount = (String) objValue;
+            int SysuiQqsCountValue = Integer.parseInt(SysuiQqsCount);
+            Settings.Secure.putInt(getContentResolver(), Settings.Secure.QQS_COUNT, SysuiQqsCountValue);
+            int SysuiQqsCountIndex = mSysuiQqsCount.findIndexOfValue(SysuiQqsCount);
+            mSysuiQqsCount.setSummary(mSysuiQqsCount.getEntries()[SysuiQqsCountIndex]);
             return true;
         }
         return false;

@@ -172,9 +172,7 @@
     <string name="quick_pulldown_always">Always</string>
 
     <!-- Quick settings tiles columns and rows config -->
-    <string name="qs_layout_category">Rows and columns</string>
-    <string name="qs_rows_portrait_title">Rows (portrait)</string>
-    <string name="qs_rows_landscape_title">Rows (landscape)</string>
+    <string name="qs_layout_category">QS tiles layout</string>
     <string name="qs_columns_title">Columns</string>
 
     <!-- Network traffic -->
@@ -202,19 +200,19 @@
     <string name="qs_advanced_data_title">Advanced data tile</string>
     <string name="qs_advanced_data_summary">Enable one tap action to enable or disable data</string>
 
-    <!-- Wifi toggle -->
-    <string name="qs_wifi_easy_toggle_title">WiFi easy toggle</string>
-    <string name="qs_wifi_easy_toggle_summary">Makes it so one click will turn WiFi on or off instead of taking you to settings</string>
-
-    <!-- BT easy toggle -->
-    <string name="bt_easy_toggle_title">Bluetooth easy toggle</string>
-    <string name="bt_easy_toggle_summary">One tap action to toggle bluetooth</string>
-
     <!-- Quick Settings brightness slider -->
     <string name="qs_brightness_slider_title">Brightness slider</string>
     <string name="qs_brightness_slider_summary">Show a brightness slider in the quick settings panel</string>
     <string name="brightness_icon_title">Brightness icon </string>
     <string name="brightness_icon_summary">Show a brightness icon to the left of the brighness slider to adjust auto-brightness</string>
+
+    <!-- Quick Settings on lockscreen -->
+    <string name="lockscreen_qs_disabled_title">Disable quick settings when locked</string>
+    <string name="lockscreen_qs_disabled_summary">Disable shortcuts and expanding quick settings on secure lock screens</string>
+
+    <!-- QuickSettings haptic feedback -->
+    <string name="quick_settings_vibrate_title">Vibrate on touch</string>
+    <string name="quick_settings_vibrate_summary">Vibrate when touching tiles</string>
 
     <!-- Navbar Tuner -->
     <string name="navbar_tuner_title">Navbar Tuner</string>
@@ -230,23 +228,6 @@
     <!-- Disabling immersive mode messages -->
     <string name="disable_immersive_message_title">Disable immersive mode messages</string>
     <string name="disable_immersive_message_summary">This will hide all Immersive Mode Messages</string>
-
-    <!-- QS settings -->
-    <string name="status_bar_expanded_qs_settings">Layout</string>
-    <string name="status_bar_expanded_qs_settings_summary">Choose the number of rows and columns</string>
-    <string name="qs_cat_portrait_title">Portrait</string>
-    <string name="qs_cat_landscape_title">Landscape</string>
-    <string name="qs_rows_title">Rows</string>
-    <string name="qs_columns_title">Columns</string>
-    <string name="qs_rows_columns_1_title">1</string>
-    <string name="qs_rows_columns_2_title">2</string>
-    <string name="qs_rows_columns_3_title">3</string>
-    <string name="qs_rows_columns_4_title">4</string>
-    <string name="qs_rows_columns_5_title">5</string>
-    <string name="qs_rows_columns_6_title">6</string>
-    <string name="qs_rows_columns_7_title">7</string>
-    <string name="qs_rows_columns_8_title">8</string>
-    <string name="qs_small_tiles_title">Small QS tiles</string>
 
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
@@ -670,21 +651,6 @@
     <string name="lockscreen_battery_info_title">Lockscreen battery info</string>
     <string name="lockscreen_battery_info_summary">Display negotiated charger max current-voltage and battery temperature on lockscreen while charging</string>
 
-    <!-- QS Header -->
-    <string name="qs_header_title">Header</string>
-    <string name="qs_settings_icon_title">Settings Shortcut</string>
-    <string name="qs_settings_icon_summary">Enable the settings shortcut in the header</string>
-    <string name="qs_settings_expanded_title">Settings Shortcut Expanded</string>
-    <string name="qs_settings_expanded_summary">Only enable the settings shortcut when expanded</string>
-    <string name="qs_edit_title">Edit Icon</string>
-    <string name="qs_edit_summary">Enable the tile edit icon in the header</string>
-    <string name="qs_multiuser_switch_title">MultiUser Switch</string>
-    <string name="qs_multiuser_switch_summary">Enable the MultiUser switch in the header</string>
-    <string name="qs_expand_indicator_title">Expand Indicator</string>
-    <string name="qs_expand_indicator_summary">Enable the expand indicator (^) in the header</string>
-    <string name="qs_date_time_center_title">Center Date and Time</string>
-    <string name="qs_date_time_center_summary">Requires one or more icons to be disabled</string>
-
     <!-- OmniJaws -->
     <string name="weather_config_title">Weather settings</string>
     <string name="weather_config_summary"></string>
@@ -723,10 +689,6 @@
     <string name="text_title">Text</string>
     <string name="icon_title">Icon</string>
     <string name="colors_title">Colors</string>
-
-    <!-- Location easy toggle -->
-    <string name="qs_location_easy_toggle_title">Location easy toggle</string>
-    <string name="qs_location_easy_toggle_summary">One click will turn location services on or off instead of taking you to settings</string>
 
     <!-- One handed mode -->
     <string name="one_handed_mode_title">One handed mode</string>

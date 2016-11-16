@@ -27,6 +27,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.ListPreference;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.Preference.OnPreferenceChangeListener;
@@ -44,6 +45,7 @@ import android.view.View;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
+import com.android.internal.util.candy.CandyUtils;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.settings.Utils;
 
@@ -54,20 +56,20 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private static final String PREF_TILE_ANIM_STYLE = "qs_tile_animation_style";
     private static final String PREF_TILE_ANIM_DURATION = "qs_tile_animation_duration";
     private static final String PREF_TILE_ANIM_INTERPOLATOR = "qs_tile_animation_interpolator";
-    private static final String PREF_SYSUI_QQS_COUNT = "sysui_qqs_count_key";
     private static final String PREF_QUICK_PULLDOWN = "quick_pulldown";
-    private static final String PREF_ROWS_PORTRAIT = "qs_rows_portrait";
-    private static final String PREF_ROWS_LANDSCAPE = "qs_rows_landscape";
-    private static final String PREF_COLUMNS = "qs_columns";
+    private static final String PREF_COLUMNS = "qs_layout_columns";
+    private static final String PREF_QS_DATA_ADVANCED = "qs_data_advanced";
+    private static final String PREF_LOCK_QS_DISABLED = "lockscreen_qs_disabled";
 
-    private CustomSeekBarPreference mSysuiQqsCount;
     private ListPreference mTileAnimationStyle;
     private ListPreference mTileAnimationDuration;
     private ListPreference mTileAnimationInterpolator;
     private ListPreference mQuickPulldown;
-    private ListPreference mRowsPortrait;
-    private ListPreference mRowsLandscape;
-    private ListPreference mQsColumns;
+    private CustomSeekBarPreference mQsColumns;
+    private SwitchPreference mQsDataAdvanced;
+    private SwitchPreference mLockQsDisabled;
+
+    private static final int MY_USER_ID = UserHandle.myUserId();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
 
         final ContentResolver resolver = getActivity().getContentResolver();
         final PreferenceScreen prefSet = getPreferenceScreen();
+        final LockPatternUtils lockPatternUtils = new LockPatternUtils(getActivity());
 
         int defaultValue;
 
@@ -112,33 +115,29 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
         mQuickPulldown.setValue(String.valueOf(quickPulldownValue));
         updatePulldownSummary(quickPulldownValue);
 
-        mSysuiQqsCount = (CustomSeekBarPreference) findPreference(PREF_SYSUI_QQS_COUNT);
-        int SysuiQqsCount = Settings.Secure.getInt(getContentResolver(),
-                Settings.Secure.QQS_COUNT, 6);
-        mSysuiQqsCount.setValue(SysuiQqsCount / 1);
-        mSysuiQqsCount.setOnPreferenceChangeListener(this);
-
-        mRowsPortrait = (ListPreference) findPreference(PREF_ROWS_PORTRAIT);
-        int rowsPortrait = Settings.Secure.getInt(getContentResolver(),
-                Settings.Secure.QS_ROWS_PORTRAIT, 3);
-        mRowsPortrait.setValue(String.valueOf(rowsPortrait));
-        mRowsPortrait.setSummary(mRowsPortrait.getEntry());
-        mRowsPortrait.setOnPreferenceChangeListener(this);
-
-        defaultValue = getResources().getInteger(com.android.internal.R.integer.config_qs_num_rows_landscape_default);
-        mRowsLandscape = (ListPreference) findPreference(PREF_ROWS_LANDSCAPE);
-        int rowsLandscape = Settings.Secure.getInt(getContentResolver(),
-                Settings.Secure.QS_ROWS_LANDSCAPE, defaultValue);
-        mRowsLandscape.setValue(String.valueOf(rowsLandscape));
-        mRowsLandscape.setSummary(mRowsLandscape.getEntry());
-        mRowsLandscape.setOnPreferenceChangeListener(this);
-
-        mQsColumns = (ListPreference) findPreference(PREF_COLUMNS);
-        int columnsQs = Settings.Secure.getInt(getContentResolver(),
-                Settings.Secure.QS_COLUMNS, 3);
-        mQsColumns.setValue(String.valueOf(columnsQs));
-        mQsColumns.setSummary(mQsColumns.getEntry());
+        mQsColumns = (CustomSeekBarPreference) findPreference(PREF_COLUMNS);
+        int columnsQs = Settings.System.getInt(resolver,
+                Settings.System.QS_LAYOUT_COLUMNS, 3);
+        mQsColumns.setValue(columnsQs / 1);
         mQsColumns.setOnPreferenceChangeListener(this);
+
+        mQsDataAdvanced = (SwitchPreference) findPreference(PREF_QS_DATA_ADVANCED);
+        mQsDataAdvanced.setOnPreferenceChangeListener(this);
+        if (DuUtils.isWifiOnly(getActivity())) {
+            prefSet.removePreference(mQsDataAdvanced);
+        } else {
+            mQsDataAdvanced.setChecked((Settings.Secure.getInt(resolver,
+                Settings.Secure.QS_DATA_ADVANCED, 0) == 1));
+        }
+
+        mLockQsDisabled = (SwitchPreference) findPreference(PREF_LOCK_QS_DISABLED);
+        if (lockPatternUtils.isSecure(MY_USER_ID)) {
+            mLockQsDisabled.setChecked((Settings.Secure.getInt(resolver,
+                Settings.Secure.LOCK_QS_DISABLED, 0) == 1));
+            mLockQsDisabled.setOnPreferenceChangeListener(this);
+        } else {
+            prefSet.removePreference(mLockQsDisabled);
+        }
     }
 
     @Override
@@ -182,30 +181,20 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
                     quickPulldownValue, UserHandle.USER_CURRENT);
             updatePulldownSummary(quickPulldownValue);
             return true;
-        } else if (preference == mSysuiQqsCount) {
-            int SysuiQqsCount = (Integer) objValue;
-            Settings.Secure.putInt(getActivity().getContentResolver(),
-                    Settings.Secure.QQS_COUNT, SysuiQqsCount * 1);
-        } else if (preference == mRowsPortrait) {
-            intValue = Integer.valueOf((String) objValue);
-            index = mRowsPortrait.findIndexOfValue((String) objValue);
-            Settings.Secure.putInt(getContentResolver(),
-                    Settings.Secure.QS_ROWS_PORTRAIT, intValue);
-            preference.setSummary(mRowsPortrait.getEntries()[index]);
-            return true;
-        } else if (preference == mRowsLandscape) {
-            intValue = Integer.valueOf((String) objValue);
-            index = mRowsLandscape.findIndexOfValue((String) objValue);
-            Settings.Secure.putInt(getContentResolver(),
-                    Settings.Secure.QS_ROWS_LANDSCAPE, intValue);
-            preference.setSummary(mRowsLandscape.getEntries()[index]);
-            return true;
         } else if (preference == mQsColumns) {
-            intValue = Integer.valueOf((String) objValue);
-            index = mQsColumns.findIndexOfValue((String) objValue);
-            Settings.Secure.putInt(getContentResolver(),
-                    Settings.Secure.QS_COLUMNS, intValue);
-            preference.setSummary(mQsColumns.getEntries()[index]);
+            int qsColumns = (Integer) objValue;
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.QS_LAYOUT_COLUMNS, qsColumns * 1);
+            return true;
+        } else if  (preference == mQsDataAdvanced) {
+            boolean checked = ((SwitchPreference)preference).isChecked();
+            Settings.Secure.putInt(getActivity().getContentResolver(),
+                    Settings.Secure.QS_DATA_ADVANCED, checked ? 1:0);
+            return true;
+        } else if  (preference == mLockQsDisabled) {
+            boolean checked = ((SwitchPreference)preference).isChecked();
+            Settings.Secure.putInt(getActivity().getContentResolver(),
+                    Settings.Secure.LOCK_QS_DISABLED, checked ? 1:0);
             return true;
         }
         return false;

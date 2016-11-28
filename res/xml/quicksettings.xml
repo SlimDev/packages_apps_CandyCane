@@ -36,6 +36,17 @@
         android:summary="@string/status_bar_toggle_brightness_summary"
         android:defaultValue="false" />
 
+    <PreferenceCategory
+        android:key="qs_tiles_category"
+        android:title="@string/qs_tiles_category">
+
+    <org.candyroms.candycane.preference.SystemSettingSwitchPreference
+        android:key="qs_tile_title_visibility"
+        android:title="@string/qs_tile_title_visibility_title"
+        android:summaryOn="@string/qs_tile_title_visibility_summary_on"
+        android:summaryOff="@string/qs_tile_title_visibility_summary_off"
+        android:defaultValue="true"/>
+
     <org.candyroms.candycane.preference.SecureSettingSwitchPreference
         android:key="qs_data_advanced"
         android:title="@string/qs_advanced_data_title"
@@ -122,7 +133,7 @@
     <org.candyroms.candycane.preference.CustomSeekBarPreference
         android:key="qs_layout_columns"
         android:title="@string/qs_columns_title"
-        settings:max="7"
+        settings:max="9"
         settings:min="1"
         settings:units=""
         android:persistent="false" />

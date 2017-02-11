@@ -64,8 +64,7 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private static final String PREF_COLUMNS = "qs_layout_columns";
     private static final String PREF_ROWS_PORTRAIT = "qs_rows_portrait";
     private static final String PREF_ROWS_LANDSCAPE = "qs_rows_landscape";
-    private static final String PREF_SYSUI_QQS_COUNT = "sysui_qqs_count_key";
-    private static final String PREF_QS_DATA_ADVANCED = "qs_data_advanced";
+    private static final String PREF_QS_EASY_TOGGLE = "qs_easy_toggle";
     private static final String PREF_LOCK_QS_DISABLED = "lockscreen_qs_disabled";
     private static final String DAYLIGHT_HEADER_PACK = "daylight_header_pack";
     private static final String DEFAULT_HEADER_PACKAGE = "com.android.systemui";
@@ -83,7 +82,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private CustomSeekBarPreference mQsColumns;
     private CustomSeekBarPreference mRowsPortrait;
     private CustomSeekBarPreference mRowsLandscape;
-    private CustomSeekBarPreference mSysuiQqsCount;
     private CustomSeekBarPreference mHeaderShadow;
     private PreferenceScreen mHeaderBrowse;
     private String mDaylightHeaderProvider;
@@ -152,20 +150,10 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
         mRowsLandscape.setValue(rowsLandscape / 1);
         mRowsLandscape.setOnPreferenceChangeListener(this);
 
-        mSysuiQqsCount = (CustomSeekBarPreference) findPreference(PREF_SYSUI_QQS_COUNT);
-        int SysuiQqsCount = Settings.Secure.getInt(getContentResolver(),
-                Settings.Secure.QQS_COUNT, 6);
-        mSysuiQqsCount.setValue(SysuiQqsCount / 1);
-        mSysuiQqsCount.setOnPreferenceChangeListener(this);
-
-        mQsDataAdvanced = (SwitchPreference) findPreference(PREF_QS_DATA_ADVANCED);
-        mQsDataAdvanced.setOnPreferenceChangeListener(this);
-        if (DuUtils.isWifiOnly(getActivity())) {
-            prefSet.removePreference(mQsDataAdvanced);
-        } else {
-            mQsDataAdvanced.setChecked((Settings.Secure.getInt(resolver,
-                Settings.Secure.QS_DATA_ADVANCED, 0) == 1));
-        }
+        mEasyToggle = (SwitchPreference) findPreference(PREF_QS_EASY_TOGGLE);
+        mEasyToggle.setOnPreferenceChangeListener(this);
+        mEasyToggle.setChecked((Settings.Secure.getInt(resolver,
+                Settings.Secure.QS_EASY_TOGGLE, 0) == 1));
 
         mLockQsDisabled = (SwitchPreference) findPreference(PREF_LOCK_QS_DISABLED);
         if (lockPatternUtils.isSecure(MY_USER_ID)) {
@@ -278,13 +266,8 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
             int rowsLandscape = (Integer) objValue;
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.QS_ROWS_LANDSCAPE, rowsLandscape * 1);
-           return true;
-        } else if (preference == mSysuiQqsCount) {
-            int SysuiQqsCount = (Integer) objValue;
-            Settings.Secure.putInt(getActivity().getContentResolver(),
-                    Settings.Secure.QQS_COUNT, SysuiQqsCount * 1);
             return true;
-        } else if  (preference == mQsDataAdvanced) {
+        } else if  (preference == mEasyToggle) {
             boolean checked = ((SwitchPreference)preference).isChecked();
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.QS_DATA_ADVANCED, checked ? 1:0);

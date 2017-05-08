@@ -45,7 +45,6 @@
     <string name="statusbar_notifications_category">Notifications</string>
     <string name="statusbar_items_category">Statusbar items</string>
     <string name="recents_category">Recents</string>
-
     <string name="candycane_summary_title">Add some sweetener</string>
 
     <!-- Dialog -->
@@ -61,6 +60,18 @@
     <string name="immersive_recents_fullscreen">Fullscreen</string>
     <string name="immersive_recents_statusbar">Statusbar only</string>
     <string name="immersive_recents_navbar">Navbar only</string>
+
+    <!-- Extended statusbar icons -->
+    <string name="qs_settings_icon_title">Settings shortcut</string>
+    <string name="qs_settings_icon_summary">Enable the settings shortcut in the extended statusbar</string>
+    <string name="qs_settings_expanded_title">Expanded settings shortcut</string>
+    <string name="qs_settings_expanded_summary">Hide the settings shortcut while the quick settings area is collpased</string>
+    <string name="qs_edit_title">Edit shortcut</string>
+    <string name="qs_edit_summary">Enable the edit shortcut in the extended statusbar</string>
+    <string name="qs_multiuser_switch_title">Multi user shortcut</string>
+    <string name="qs_multiuser_switch_summary">Enable the multi user shortcut in the extended statusbar</string>
+    <string name="qs_expand_indicator_title">Expand indicator</string>
+    <string name="qs_expand_indicator_summary">Enable the indicator used to expand or collpase the quick settings area</string>
 
     <!-- Power Menu -->
     <string name="powermenu_category">Power menu</string>
@@ -677,21 +688,6 @@
     <string name="lockscreen_battery_category">Lockscreen Battery</string>
     <string name="lockscreen_battery_info_title">Lockscreen battery info</string>
     <string name="lockscreen_battery_info_summary">Display negotiated charger max current-voltage and battery temperature on lockscreen while charging</string>
-
-    <!-- QS Header -->
-    <string name="qs_header_title">Header</string>
-    <string name="qs_settings_icon_title">Settings Shortcut</string>
-    <string name="qs_settings_icon_summary">Enable the settings shortcut in the header</string>
-    <string name="qs_settings_expanded_title">Settings Shortcut Expanded</string>
-    <string name="qs_settings_expanded_summary">Only enable the settings shortcut when expanded</string>
-    <string name="qs_edit_title">Edit Icon</string>
-    <string name="qs_edit_summary">Enable the tile edit icon in the header</string>
-    <string name="qs_multiuser_switch_title">MultiUser Switch</string>
-    <string name="qs_multiuser_switch_summary">Enable the MultiUser switch in the header</string>
-    <string name="qs_expand_indicator_title">Expand Indicator</string>
-    <string name="qs_expand_indicator_summary">Enable the expand indicator (^) in the header</string>
-    <string name="qs_date_time_center_title">Center Date and Time</string>
-    <string name="qs_date_time_center_summary">Requires one or more icons to be disabled</string>
 
     <!-- OmniJaws -->
     <string name="weather_config_title">Weather settings</string>

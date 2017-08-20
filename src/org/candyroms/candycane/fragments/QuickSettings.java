@@ -67,7 +67,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private static final String PREF_ROWS_PORTRAIT = "qs_rows_portrait";
     private static final String PREF_ROWS_LANDSCAPE = "qs_rows_landscape";
     private static final String PREF_QS_EASY_TOGGLE = "qs_easy_toggle";
-    private static final String PREF_LOCK_QS_DISABLED = "lockscreen_qs_disabled";
     private static final String DAYLIGHT_HEADER_PACK = "daylight_header_pack";
     private static final String DEFAULT_HEADER_PACKAGE = "com.android.systemui";
     private static final String CUSTOM_HEADER_IMAGE_SHADOW = "status_bar_custom_header_shadow";
@@ -87,7 +86,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
     private PreferenceScreen mHeaderBrowse;
     private String mDaylightHeaderProvider;
     private SwitchPreference mEasyToggle;
-    private SwitchPreference mLockQsDisabled;
 
     private static final int MY_USER_ID = UserHandle.myUserId();
 
@@ -99,7 +97,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
 
         final ContentResolver resolver = getActivity().getContentResolver();
         final PreferenceScreen prefSet = getPreferenceScreen();
-        final LockPatternUtils lockPatternUtils = new LockPatternUtils(getActivity());
 
         int defaultValue;
 
@@ -158,15 +155,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
         mEasyToggle.setOnPreferenceChangeListener(this);
         mEasyToggle.setChecked((Settings.Secure.getInt(resolver,
                 Settings.Secure.QS_EASY_TOGGLE, 0) == 1));
-
-        mLockQsDisabled = (SwitchPreference) findPreference(PREF_LOCK_QS_DISABLED);
-        if (lockPatternUtils.isSecure(MY_USER_ID)) {
-            mLockQsDisabled.setChecked((Settings.Secure.getInt(resolver,
-                Settings.Secure.LOCK_QS_DISABLED, 0) == 1));
-            mLockQsDisabled.setOnPreferenceChangeListener(this);
-        } else {
-            prefSet.removePreference(mLockQsDisabled);
-        }
 
         String settingHeaderPackage = Settings.System.getString(getContentResolver(),
                 Settings.System.STATUS_BAR_DAYLIGHT_HEADER_PACK);
@@ -276,11 +264,6 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
             Settings.Secure.putInt(getActivity().getContentResolver(),
                     Settings.Secure.QS_EASY_TOGGLE, checked ? 1:0);
             return true;
-        } else if  (preference == mLockQsDisabled) {
-            boolean checked = ((SwitchPreference)preference).isChecked();
-            Settings.Secure.putInt(getActivity().getContentResolver(),
-                    Settings.Secure.LOCK_QS_DISABLED, checked ? 1:0);
-            return true;
         } else if (preference == mDaylightHeaderPack) {
             String value = (String) objValue;
             Settings.System.putString(getContentResolver(),
@@ -288,12 +271,12 @@ public class QuickSettings extends SettingsPreferenceFragment implements OnPrefe
             int valueIndex = mDaylightHeaderPack.findIndexOfValue(value);
             mDaylightHeaderPack.setSummary(mDaylightHeaderPack.getEntries()[valueIndex]);
             return true;
-         } else if (preference == mHeaderShadow) {
+        } else if (preference == mHeaderShadow) {
             Integer headerShadow = (Integer) objValue;
             Settings.System.putInt(getContentResolver(),
                     Settings.System.STATUS_BAR_CUSTOM_HEADER_SHADOW, headerShadow);
             return true;
-         } else if (preference == mHeaderProvider) {
+        } else if (preference == mHeaderProvider) {
             String value = (String) objValue;
             Settings.System.putString(getContentResolver(),
                     Settings.System.STATUS_BAR_CUSTOM_HEADER_PROVIDER, value);

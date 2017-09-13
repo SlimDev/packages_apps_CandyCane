@@ -140,11 +140,8 @@
     <string name="clock_date_left">Left of time</string>
 
     <!-- Animation Settings -->
-    <string name="quicksettings_tiles_category">Animations</string>
+    <string name="qs_animation_category_title">QS Tiles animation options</string>
     <string name="animation_settings_summary">Set custom styles for system animations</string>
-    <string name="system_animation_tab">System</string>
-    <string name="toast_animation_tab">Toast</string>
-    <string name="listview_animation_tab">Listview</string>
     <string name="power_menu_animation_tab">Power menu</string>
     <string name="qs_animation_tab">Quick Settings</string>
 
@@ -213,10 +210,11 @@
     <string name="bt_easy_toggle_summary">One tap action to toggle bluetooth</string>
 
   <!-- Quick Settings -->
+    <string name="qs_header_category_title">HEADER SHORTCUTS</string> 
     <string name="qstiles_layout_summary">Configure the layout of the tiles panel (number of rows and columns).</string>
     <string name="qstiles_layout_title">QS tiles layout</string>
     <string name="qstiles_category_title">QS TILES</string>
-    <string name="qs_header_category">QS header options</string>
+    <string name="qs_header_category">QS header</string>
     <string name="status_bar_custom_header_title">Custom header image</string>
     <string name="status_bar_custom_header_summary">Enable notification panel header image</string>
     <string name="daylight_header_pack_title">Header image pack</string>
